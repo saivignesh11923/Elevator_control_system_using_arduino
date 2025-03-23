@@ -1,0 +1,209 @@
+
+#include <LiquidCrystal.h>
+
+#define pin7 10
+#define pin2 11 
+#define button4 9
+#define button3 8
+#define button2 7
+#define button1 6 
+#define button0 A2
+#define ledred A0
+#define ledgreen A3
+#define buzzer A5
+
+LiquidCrystal lcd(13, 12, 5, 4, 3, 2);
+boolean state1;
+boolean state2;
+boolean state3;
+boolean state4;
+boolean state5;
+int i = 1;
+int j = 1;
+int p=j;
+
+void setup() 
+{ 
+  pinMode(pin7, OUTPUT); 
+  pinMode(pin2, OUTPUT); 
+  pinMode(ledgreen, OUTPUT);
+  pinMode(ledred, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+  lcd.begin(16, 2);
+  Serial.begin(9600);
+  pinMode(button4, INPUT);
+  pinMode(button2, INPUT);
+  pinMode(button3, INPUT);
+  pinMode(button1, INPUT);
+  pinMode(button0, INPUT);
+}
+
+void loop() 
+{
+  lcd.print("You are on ");
+  lcd.setCursor(0, 1);
+  lcd.print("Floor ");
+  lcd.print(i);
+  delay(1000);
+  lcd.clear();
+  state1 = digitalRead(button1);
+  state2 = digitalRead(button2);
+  state3 = digitalRead(button3);
+  state4 = digitalRead(button4);
+  state5 = digitalRead(button0);
+  digitalWrite(pin7, LOW);
+  digitalWrite(pin2, LOW);
+  
+   if (state5 == HIGH)
+  {
+    while (j < 5)
+    {
+      j++;
+      digitalWrite(pin7, LOW);
+      digitalWrite(pin2, HIGH);
+      lcd.print(" EMERGENCY ");
+      lcd.setCursor(0, 1);
+      lcd.print(" ALERT ");
+      digitalWrite(ledred, HIGH);
+      digitalWrite(ledgreen, 0);
+      tone(buzzer, 1000);
+      delay(1000);
+      noTone(buzzer);
+      lcd.clear();
+    }
+    j = 1;
+    lcd.clear();
+  }
+
+  if (state4 == HIGH)
+  {
+    while (i < 4)
+    {
+      i++;
+      digitalWrite(pin7, LOW);
+      digitalWrite(pin2, HIGH);
+      lcd.print("Going Up ");
+      lcd.setCursor(0, 1);
+      lcd.print("Floor ");
+      lcd.print(i);
+      delay(1000);
+      lcd.clear();
+    }
+    i = 4;
+    p=i;
+    lcd.clear();
+  }
+
+  if (state3 == HIGH)
+  {
+    if (i > 3)
+    {
+      while (i > 3)
+      {
+        i--;
+        digitalWrite(pin7, HIGH);
+        digitalWrite(pin2, LOW);
+        lcd.print("Going Down ");
+        lcd.setCursor(0, 1);
+        lcd.print("Floor ");
+        lcd.print(i);
+        delay(1000);
+        lcd.clear();
+      }
+    }
+
+    if (i < 3)
+    {
+      while (i < 3)
+      {
+        i++;
+        digitalWrite(pin7, LOW);
+        digitalWrite(pin2, HIGH);
+        lcd.print("Going Up ");
+        lcd.setCursor(0, 1);
+        lcd.print("Floor ");
+        lcd.print(i);
+        delay(1000);
+        lcd.clear();
+      }
+    }
+    i = 3;
+    p=i;
+    lcd.clear();
+  }
+
+  if (state2 == HIGH)
+  {
+    if (i > 2)
+    {
+      while (i > 2)
+      {
+        i--;
+        digitalWrite(pin7, HIGH);
+        digitalWrite(pin2, LOW);
+        lcd.print("Going Down");
+        lcd.setCursor(0, 1);
+        lcd.print("Floor ");
+        lcd.print(i);
+        delay(1000);
+        lcd.clear();
+      }
+    }
+
+    if (i < 2)
+    {
+      while (i < 2)
+      {
+        i++;
+        digitalWrite(pin7, LOW);
+        digitalWrite(pin2, HIGH);
+        lcd.print("Going Up");
+        lcd.setCursor(0, 1);
+        lcd.print("Floor ");
+        lcd.print(i);
+        delay(1000);
+        lcd.clear();
+      }
+    }
+    i = 2;
+    p=i;
+    lcd.clear();
+  }
+
+  if (state1 == HIGH)
+  {
+    if (i > 1)
+    {
+      while (i > 1)
+      {
+        i--;
+        digitalWrite(pin7, HIGH);
+        digitalWrite(pin2, LOW);
+        lcd.print("Going Down ");
+        lcd.setCursor(0, 1);
+        lcd.print("Floor ");
+        lcd.print(i);
+        delay(1000);
+        lcd.clear();
+      }
+      i = 1;
+      int p=i;
+      lcd.clear();
+    }
+  }
+  
+  digitalWrite(ledgreen, LOW);
+  digitalWrite(ledred, LOW);
+  if (state1 == HIGH || state2 == HIGH || state3 == HIGH || state4 == HIGH) {
+    digitalWrite(ledgreen, HIGH);
+    ringBuzzer(500);
+  } else {
+    digitalWrite(ledred, HIGH);
+  }
+}
+void ringBuzzer(int duration)
+{
+  tone(buzzer, 1000);
+  delay(duration);
+  noTone(buzzer);
+}
